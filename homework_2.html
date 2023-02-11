@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My HTML Page</title>
+</head>
+<body>
+  <!-- Your HTML content goes here -->
+  
+  <!-- Add the button element -->
+  <button id="check-result">Check Result</button>
+ 
+  <!-- Insert the JavaScript code -->
+  <script>
+    // Connect to Ethereum blockchain
+    if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // Set the provider you want from Web3.providers
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    }
+
+    // Get the address of the Game contract
+    var gameContractAddress = "0x50b94eb595ac9bc6671c3cd4e8f2717eecf3a8e5f9a605fbd714b82ff1c67116";
+
+    // Get the ABI of the Game contract
+    var gameContractABI = [[
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "a",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "b",
+        "type": "uint256"
+      }
+    ],
+    "name": "bitwiseOperation",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]]
+
+    // Create an instance of the Game contract
+    var gameContract = new web3.eth.Contract(gameContractABI, gameContractAddress);
+
+    // Get the first number input from the user
+    var firstNumber = parseInt(document.getElementById("first-number").value);
+
+    // Get the second number input from the user
+    var secondNumber = parseInt(document.getElementById("second-number").value);
+
+
+    // Button click event
+    document.getElementById("check-result").addEventListener("click", function() {
+      // Call the function in the Game contract
+      gameContract.methods.checkResult(firstNumber, secondNumber).send({ from: web3.eth.defaultAccount }, function(error, result) {
+        if (!error) {
+          // Check if the user guess correct
+          if (result) {
+            alert("You guessed correctly!");
+          } else {
+            alert("You guessed wrong.");
+          }
+        } else {
+          console.error(error);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
