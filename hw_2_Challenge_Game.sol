@@ -1,27 +1,23 @@
-// SPDX-License-Identifier:MIT
-
-// Engine.sol
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
-
-contract Engine {
-    function bitwiseOperation(uint a, uint b) public pure returns (uint) {
-        return a & b;
-    }
-}
-
-// Game.sol
-pragma solidity ^0.8.17;
-import "homework_2/Engine.sol";
-
+// Inhherit the Engine function (already compiled)
+import "./Engine.sol";
+  
 contract Game is Engine {
+    function play(uint userGuess) public view returns (bool) {
+    // Generate two numbers randomly using the function subsequently established
+        //Copy and paste of the function provided in GeeksforGeeks
+        uint random_number_1 = uint(keccak256(abi.encodePacked(block.timestamp))) % 3;
+        uint random_number_2 = uint(keccak256(abi.encodePacked(block.timestamp, random_number_1))) % 3;
 
-function play(uint guess) public view returns (bool) {
-    uint randomA = uint(keccak256(abi.encodePacked(block.timestamp)));
-    uint randomB = uint(keccak256(abi.encodePacked(guess)));
+    // Call the function from the Engine contract (in my case, the bitwiseAnd) 
+        uint comparison = bitwiseAnd(random_number_1, random_number_2);
 
-    uint result = bitwiseOperation(randomA, randomB);
-
-    return result == guess;
-}
-
+    // Return a boolean: true = correctly guessed; false = wrong guess.
+    if (comparison == userGuess) {
+        return true;
+    } else {
+        return false;
+    }
+    }
 }
